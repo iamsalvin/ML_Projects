@@ -1,125 +1,234 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Loan Default Risk Assessment</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <a class="navbar-brand" href="/">Loan Prediction Models</a>
-        <a class="btn btn-outline-light" href="/">Back to Dashboard</a>
+{% extends "base.html" %} {% block title %}Default Risk Assessment{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="mb-0">
+          <i class="fas fa-shield-alt me-2"></i>Default Risk Assessment
+        </h2>
       </div>
-    </nav>
+      <div class="card-body">
+        <p class="lead mb-4">
+          Evaluate your loan default risk using K-Nearest Neighbors
+          classification based on your CIBIL Score and Monthly Income.
+        </p>
 
-    <div class="container">
-      <div class="form-container">
-        <h2 class="text-center mb-4">Loan Default Risk Assessment</h2>
-        <form id="knnForm">
-          <div class="mb-3">
-            <label for="feature1" class="form-label"
-              >CIBIL Score (300-900)</label
-            >
-            <input
-              type="number"
-              class="form-control"
-              id="feature1"
-              name="feature1"
-              min="300"
-              max="900"
-              required
-            />
+        <form id="predictionForm">
+          <div class="row g-3">
+            <!-- CIBIL Score -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="cibil_score" class="form-label">
+                  <i class="fas fa-star me-1"></i>CIBIL Score
+                </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="cibil_score"
+                  name="cibil_score"
+                  min="300"
+                  max="900"
+                  required
+                  placeholder="Enter CIBIL Score (300-900)"
+                />
+                <div class="invalid-feedback">
+                  Please enter a valid CIBIL Score between 300 and 900.
+                </div>
+              </div>
+            </div>
+
+            <!-- Monthly Income -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="monthly_income" class="form-label">
+                  <i class="fas fa-money-bill-wave me-1"></i>Monthly Income (₹)
+                </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="monthly_income"
+                  name="monthly_income"
+                  min="0"
+                  required
+                  placeholder="Enter Monthly Income"
+                />
+                <div class="invalid-feedback">
+                  Please enter a valid monthly income.
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-12 text-center mt-4">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-calculator me-2"></i>Assess Default Risk
+              </button>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="feature2" class="form-label">Monthly Income (₹)</label>
-            <input
-              type="number"
-              class="form-control"
-              id="feature2"
-              name="feature2"
-              min="0"
-              required
-            />
-          </div>
-          <button type="submit" class="btn btn-primary w-100">
-            Assess Risk
-          </button>
         </form>
-        <div class="result-container" id="resultContainer">
-          <h4>Risk Assessment Result:</h4>
-          <p id="predictionResult"></p>
+
+        <!-- Loading Spinner -->
+        <div class="text-center mt-4" id="loadingSpinner" style="display: none">
+          <div class="spinner"></div>
+          <p class="mt-2">Analyzing your data...</p>
         </div>
-        <div class="error-message" id="errorMessage"></div>
+
+        <!-- Result Section -->
+        <div id="result" class="result mt-4" style="display: none">
+          <h3><i class="fas fa-chart-pie me-2"></i>Risk Assessment Result</h3>
+          <div id="resultContent"></div>
+        </div>
+
+        <!-- Guidelines Section -->
+        <div class="mt-4">
+          <h4>
+            <i class="fas fa-info-circle me-2"></i>Risk Assessment Guidelines
+          </h4>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <i class="fas fa-star text-warning me-2"></i>
+              <strong>CIBIL Score:</strong> Higher scores (700+) indicate better
+              creditworthiness
+            </li>
+            <li class="list-group-item">
+              <i class="fas fa-money-bill-wave text-success me-2"></i>
+              <strong>Monthly Income:</strong> Higher income reduces default
+              risk
+            </li>
+            <li class="list-group-item">
+              <i class="fas fa-shield-alt text-primary me-2"></i>
+              <strong>Risk Categories:</strong>
+              <ul class="mt-2">
+                <li>Low Risk: Good credit score and sufficient income</li>
+                <li>High Risk: Poor credit score or insufficient income</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<script>
+  document
+    .getElementById("predictionForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
 
-    <script>
-      document
-        .getElementById("knnForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const feature1 = document.getElementById("feature1").value;
-          const feature2 = document.getElementById("feature2").value;
-          const resultContainer = document.getElementById("resultContainer");
-          const errorMessage = document.getElementById("errorMessage");
-          const predictionResult = document.getElementById("predictionResult");
+      // Show loading spinner
+      document.getElementById("loadingSpinner").style.display = "block";
+      document.getElementById("result").style.display = "none";
 
-          if (feature1 < 300 || feature1 > 900) {
-            errorMessage.textContent =
-              "CIBIL Score must be between 300 and 900";
-            errorMessage.classList.add("show");
-            resultContainer.classList.remove("show");
-            return;
+      // Get form data
+      const cibilScore = parseFloat(
+        document.getElementById("cibil_score").value
+      );
+      const monthlyIncome = parseFloat(
+        document.getElementById("monthly_income").value
+      );
+
+      // Validate input
+      if (cibilScore < 300 || cibilScore > 900 || isNaN(cibilScore)) {
+        alert("Please enter a valid CIBIL Score between 300 and 900");
+        return;
+      }
+
+      if (monthlyIncome <= 0 || isNaN(monthlyIncome)) {
+        alert("Please enter a valid Monthly Income");
+        return;
+      }
+
+      // Send prediction request
+      fetch("/predict/knn", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          features: [cibilScore, monthlyIncome],
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Hide loading spinner
+          document.getElementById("loadingSpinner").style.display = "none";
+
+          // Show result
+          const resultDiv = document.getElementById("result");
+          const resultContent = document.getElementById("resultContent");
+
+          if (data.error) {
+            throw new Error(data.error);
           }
 
-          if (feature2 <= 0) {
-            errorMessage.textContent = "Monthly Income must be greater than 0";
-            errorMessage.classList.add("show");
-            resultContainer.classList.remove("show");
-            return;
+          // Create result HTML
+          let resultHtml = "";
+          if (data.prediction === "High Risk") {
+            resultHtml = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>High Default Risk</strong><br>
+                    Based on your CIBIL Score (${cibilScore}) and Monthly Income (₹${monthlyIncome.toLocaleString()}), 
+                    there is a high risk of default. We recommend:
+                    <ul class="mt-2 mb-0">
+                        <li>Improving your credit score through timely payments</li>
+                        <li>Reducing existing debt</li>
+                        <li>Increasing your income or providing additional collateral</li>
+                    </ul>
+                </div>
+            `;
+          } else {
+            resultHtml = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>Low Default Risk</strong><br>
+                    Based on your CIBIL Score (${cibilScore}) and Monthly Income (₹${monthlyIncome.toLocaleString()}), 
+                    there is a low risk of default. You are likely to:
+                    <ul class="mt-2 mb-0">
+                        <li>Qualify for favorable interest rates</li>
+                        <li>Have higher loan amount eligibility</li>
+                        <li>Experience faster loan approval</li>
+                    </ul>
+                </div>
+            `;
           }
 
-          try {
-            const response = await fetch("/predict/knn", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                features: [parseFloat(feature1), parseFloat(feature2)],
-              }),
-            });
+          resultContent.innerHTML = resultHtml;
+          resultDiv.style.display = "block";
+        })
+        .catch((error) => {
+          // Hide loading spinner
+          document.getElementById("loadingSpinner").style.display = "none";
 
-            const data = await response.json();
-
-            if (data.error) {
-              errorMessage.textContent = data.error;
-              errorMessage.classList.add("show");
-              resultContainer.classList.remove("show");
-            } else {
-              predictionResult.textContent = `Default Risk: ${data.prediction}`;
-              predictionResult.className =
-                data.prediction === "Low Risk" ? "text-success" : "text-danger";
-              resultContainer.classList.add("show");
-              errorMessage.classList.remove("show");
-            }
-          } catch (error) {
-            errorMessage.textContent =
-              "An error occurred while making the prediction.";
-            errorMessage.classList.add("show");
-            resultContainer.classList.remove("show");
-          }
+          // Show error message
+          const resultDiv = document.getElementById("result");
+          const resultContent = document.getElementById("resultContent");
+          resultContent.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong>Error</strong><br>
+                ${
+                  error.message ||
+                  "An error occurred while processing your request. Please try again."
+                }
+            </div>
+        `;
+          resultDiv.style.display = "block";
         });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+    });
+
+  // Form validation
+  const inputs = document.querySelectorAll('input[type="number"]');
+  inputs.forEach((input) => {
+    input.addEventListener("input", function () {
+      if (this.checkValidity()) {
+        this.classList.remove("is-invalid");
+      } else {
+        this.classList.add("is-invalid");
+      }
+    });
+  });
+</script>
+{% endblock %}

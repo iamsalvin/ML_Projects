@@ -1,147 +1,303 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Loan Amount Prediction</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <a class="navbar-brand" href="/">Loan Prediction Models</a>
-        <a class="btn btn-outline-light" href="/">Back to Dashboard</a>
-      </div>
-    </nav>
-
-    <div class="container">
-      <div class="form-container">
-        <h2 class="text-center mb-4">Loan Amount Prediction</h2>
-        <form id="mlrForm">
-          <div class="mb-3">
-            <label for="feature1" class="form-label"
-              >CIBIL Score (300-900)</label
-            >
-            <input
-              type="number"
-              class="form-control"
-              id="feature1"
-              name="feature1"
-              min="300"
-              max="900"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="feature2" class="form-label">Annual Income (₹)</label>
-            <input
-              type="number"
-              class="form-control"
-              id="feature2"
-              name="feature2"
-              min="0"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="feature3" class="form-label">Age (Years)</label>
-            <input
-              type="number"
-              class="form-control"
-              id="feature3"
-              name="feature3"
-              min="18"
-              max="80"
-              required
-            />
-          </div>
-          <button type="submit" class="btn btn-primary w-100">
-            Predict Loan Amount
-          </button>
-        </form>
-        <div class="result-container" id="resultContainer">
-          <h4>Prediction Result:</h4>
-          <p id="predictionResult"></p>
+{% extends "base.html" %} {% block title %}Interest Rate Prediction{% endblock
+%} {% block content %}
+<div class="container py-5">
+  <div class="card shadow-lg">
+    <div class="card-header bg-primary text-white">
+      <h2 class="mb-0">
+        <i class="fas fa-percentage me-2"></i>
+        Interest Rate Prediction
+      </h2>
+    </div>
+    <div class="card-body">
+      <div class="row mb-4">
+        <div class="col-md-8">
+          <p class="lead">
+            Get an estimated interest rate based on your CIBIL score, annual
+            income, and age using our Multiple Linear Regression model.
+          </p>
         </div>
-        <div class="error-message" id="errorMessage"></div>
+      </div>
+
+      <!-- Prediction Form -->
+      <form id="mlrForm" class="needs-validation" novalidate>
+        <div class="row g-4">
+          <!-- CIBIL Score Input -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="cibilScore" class="form-label">CIBIL Score</label>
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-chart-line"></i
+                ></span>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="cibilScore"
+                  name="cibilScore"
+                  min="300"
+                  max="900"
+                  required
+                  placeholder="300-900"
+                />
+              </div>
+              <div class="form-text">
+                Your credit score (between 300 and 900)
+              </div>
+              <div class="invalid-feedback">
+                Please enter a valid CIBIL score between 300 and 900.
+              </div>
+            </div>
+          </div>
+
+          <!-- Annual Income Input -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="annualIncome" class="form-label">Annual Income</label>
+              <div class="input-group">
+                <span class="input-group-text">₹</span>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="annualIncome"
+                  name="annualIncome"
+                  min="100000"
+                  required
+                  placeholder="Enter annual income"
+                />
+              </div>
+              <div class="form-text">Your yearly income in rupees</div>
+              <div class="invalid-feedback">
+                Please enter a valid annual income (minimum ₹1,00,000).
+              </div>
+            </div>
+          </div>
+
+          <!-- Age Input -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="age" class="form-label">Age</label>
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-user"></i
+                ></span>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="age"
+                  name="age"
+                  min="21"
+                  max="65"
+                  required
+                  placeholder="21-65"
+                />
+              </div>
+              <div class="form-text">Your current age (between 21 and 65)</div>
+              <div class="invalid-feedback">
+                Please enter a valid age between 21 and 65.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-calculator me-2"></i>Calculate Interest Rate
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Loading Spinner -->
+      <div id="loadingSpinner" class="text-center mt-4 d-none">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Calculating your interest rate...</p>
+      </div>
+
+      <!-- Result Section -->
+      <div id="resultSection" class="mt-4 d-none">
+        <div class="card bg-light">
+          <div class="card-body">
+            <h4 class="card-title text-primary">
+              <i class="fas fa-chart-bar me-2"></i>Interest Rate Prediction
+            </h4>
+            <div id="predictionResult" class="mt-3">
+              <h3 class="text-center prediction-value"></h3>
+              <div class="row mt-4">
+                <div class="col-md-4">
+                  <div class="text-center">
+                    <i class="fas fa-chart-line fa-2x text-primary mb-2"></i>
+                    <h5>CIBIL Impact</h5>
+                    <p class="cibil-impact"></p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="text-center">
+                    <i
+                      class="fas fa-money-bill-wave fa-2x text-success mb-2"
+                    ></i>
+                    <h5>Income Impact</h5>
+                    <p class="income-impact"></p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="text-center">
+                    <i class="fas fa-user fa-2x text-info mb-2"></i>
+                    <h5>Age Impact</h5>
+                    <p class="age-impact"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interest Rate Guidelines -->
+      <div class="card mt-4">
+        <div class="card-header bg-light">
+          <h4 class="mb-0">Understanding Interest Rate Factors</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <h5>
+                <i class="fas fa-chart-line text-primary me-2"></i>CIBIL Score
+                Impact
+              </h5>
+              <ul class="list-unstyled">
+                <li>• 300-550: Higher rates (13-15.5%)</li>
+                <li>• 551-700: Moderate rates (10-12.9%)</li>
+                <li>• 701-900: Lower rates (5.5-9.9%)</li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h5>
+                <i class="fas fa-money-bill-wave text-success me-2"></i>Income
+                Impact
+              </h5>
+              <ul class="list-unstyled">
+                <li>• Below ₹5L: Higher rates</li>
+                <li>• ₹5L-10L: Moderate rates</li>
+                <li>• Above ₹10L: Lower rates</li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h5><i class="fas fa-user text-info me-2"></i>Age Impact</h5>
+              <ul class="list-unstyled">
+                <li>• 21-35: Slightly higher rates</li>
+                <li>• 36-50: Moderate rates</li>
+                <li>• 51-65: Lower rates</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <script>
-      document
-        .getElementById("mlrForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const feature1 = document.getElementById("feature1").value;
-          const feature2 = document.getElementById("feature2").value;
-          const feature3 = document.getElementById("feature3").value;
-          const resultContainer = document.getElementById("resultContainer");
-          const errorMessage = document.getElementById("errorMessage");
-          const predictionResult = document.getElementById("predictionResult");
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("mlrForm");
+    const loadingSpinner = document.getElementById("loadingSpinner");
+    const resultSection = document.getElementById("resultSection");
 
-          if (feature1 < 300 || feature1 > 900) {
-            errorMessage.textContent =
-              "CIBIL Score must be between 300 and 900";
-            errorMessage.classList.add("show");
-            resultContainer.classList.remove("show");
-            return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // Form validation
+      if (!form.checkValidity()) {
+        e.stopPropagation();
+        form.classList.add("was-validated");
+        return;
+      }
+
+      // Get form values
+      const cibilScore = parseInt(document.getElementById("cibilScore").value);
+      const annualIncome = parseInt(
+        document.getElementById("annualIncome").value
+      );
+      const age = parseInt(document.getElementById("age").value);
+
+      // Show loading spinner
+      loadingSpinner.classList.remove("d-none");
+      resultSection.classList.add("d-none");
+
+      // Make prediction request
+      fetch("/predict/mlr", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          features: [cibilScore, annualIncome, age],
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          loadingSpinner.classList.add("d-none");
+          resultSection.classList.remove("d-none");
+
+          if (data.error) {
+            throw new Error(data.error);
           }
 
-          if (feature2 <= 0) {
-            errorMessage.textContent = "Annual Income must be greater than 0";
-            errorMessage.classList.add("show");
-            resultContainer.classList.remove("show");
-            return;
-          }
+          // Update prediction result
+          const predictionValue = document.querySelector(".prediction-value");
+          predictionValue.textContent = data.prediction;
 
-          if (feature3 < 18 || feature3 > 80) {
-            errorMessage.textContent = "Age must be between 18 and 80 years";
-            errorMessage.classList.add("show");
-            resultContainer.classList.remove("show");
-            return;
-          }
-
-          try {
-            const response = await fetch("/predict/mlr", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                features: [
-                  parseFloat(feature1),
-                  parseFloat(feature2),
-                  parseFloat(feature3),
-                ],
-              }),
-            });
-
-            const data = await response.json();
-
-            if (data.error) {
-              errorMessage.textContent = data.error;
-              errorMessage.classList.add("show");
-              resultContainer.classList.remove("show");
-            } else {
-              predictionResult.textContent = `Eligible Loan Amount: ${data.prediction}`;
-              resultContainer.classList.add("show");
-              errorMessage.classList.remove("show");
-            }
-          } catch (error) {
-            errorMessage.textContent =
-              "An error occurred while making the prediction.";
-            errorMessage.classList.add("show");
-            resultContainer.classList.remove("show");
-          }
+          // Update impact descriptions
+          updateImpactDescriptions(cibilScore, annualIncome, age);
+        })
+        .catch((error) => {
+          loadingSpinner.classList.add("d-none");
+          alert("Error: " + error.message);
         });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+    });
+
+    function updateImpactDescriptions(cibil, income, age) {
+      // CIBIL Impact
+      const cibilImpact = document.querySelector(".cibil-impact");
+      if (cibil >= 700) {
+        cibilImpact.textContent =
+          "Excellent credit score, contributing to a lower interest rate";
+      } else if (cibil >= 550) {
+        cibilImpact.textContent =
+          "Fair credit score, moderate impact on interest rate";
+      } else {
+        cibilImpact.textContent =
+          "Lower credit score, resulting in a higher interest rate";
+      }
+
+      // Income Impact
+      const incomeImpact = document.querySelector(".income-impact");
+      if (income >= 1000000) {
+        incomeImpact.textContent =
+          "High income level, favorable for lower interest rates";
+      } else if (income >= 500000) {
+        incomeImpact.textContent =
+          "Moderate income level, average impact on interest rate";
+      } else {
+        incomeImpact.textContent =
+          "Lower income level, may result in higher interest rates";
+      }
+
+      // Age Impact
+      const ageImpact = document.querySelector(".age-impact");
+      if (age >= 50) {
+        ageImpact.textContent =
+          "Mature age bracket, typically receives lower interest rates";
+      } else if (age >= 35) {
+        ageImpact.textContent =
+          "Mid-age bracket, moderate impact on interest rate";
+      } else {
+        ageImpact.textContent =
+          "Younger age bracket, may have slightly higher rates";
+      }
+    }
+  });
+</script>
+{% endblock %}

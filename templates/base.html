@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}ML Loan Predictor{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('home') }}">
+          <i class="fas fa-brain me-2"></i>ML Loan Predictor
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('home') }}">
+                <i class="fas fa-home me-1"></i>Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('predict_loan_amount') }}">
+                <i class="fas fa-dollar-sign me-1"></i>Loan Amount
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('predict_interest_rate') }}">
+                <i class="fas fa-percentage me-1"></i>Interest Rate
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="{{ url_for('predict_approval_status') }}"
+              >
+                <i class="fas fa-check-circle me-1"></i>Approval Status
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="{{ url_for('predict_interest_rate_poly') }}"
+              >
+                <i class="fas fa-chart-line me-1"></i>Interest Rate (Poly)
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('predict_default_risk') }}">
+                <i class="fas fa-shield-alt me-1"></i>Default Risk
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        class="alert alert-{{ category }} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+      {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <p>&copy; 2024 ML Loan Predictor. All rights reserved.</p>
+          </div>
+          <div class="col-md-6">
+            <a
+              href="https://github.com/iamsalvin/ML_Projects"
+              class="text-white me-3"
+              target="_blank"
+            >
+              <i class="fab fa-github"></i> GitHub
+            </a>
+            <a href="#" class="text-white" data-tooltip="Documentation">
+              <i class="fas fa-book"></i> Docs
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Add loading spinner to forms
+      $("form").on("submit", function () {
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.html();
+        submitBtn
+          .prop("disabled", true)
+          .html(
+            '<span class="spinner-border spinner-border-sm me-2"></span>Processing...'
+          );
+
+        setTimeout(() => {
+          submitBtn.prop("disabled", false).html(originalText);
+        }, 10000); // Reset after 10 seconds if no response
+      });
+
+      // Initialize tooltips
+      const tooltips = document.querySelectorAll("[data-tooltip]");
+      tooltips.forEach((tooltip) => {
+        new bootstrap.Tooltip(tooltip);
+      });
+
+      // Smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute("href")).scrollIntoView({
+            behavior: "smooth",
+          });
+        });
+      });
+    </script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
