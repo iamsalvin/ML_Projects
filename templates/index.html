@@ -1,295 +1,173 @@
 {% extends "base.html" %} {% block title %}ML Loan Predictor - Home{% endblock
 %} {% block content %}
-<div class="container py-5">
-  <!-- Hero Section -->
-  <div class="hero-section text-center mb-5">
-    <h1 class="display-4 mb-4">Welcome to ML Loan Predictor</h1>
-    <p class="lead mb-4">
-      Leverage the power of machine learning to make informed decisions about
-      your loan. Our advanced algorithms provide accurate predictions for
-      various loan-related metrics.
-    </p>
-    <div class="stats-container row justify-content-center text-center mt-4">
-      <div class="col-md-3">
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <div class="hero-content text-center">
+      <h1 class="hero-title">ML Loan Predictor</h1>
+      <p class="hero-subtitle">
+        Predict loan outcomes using advanced machine learning models
+      </p>
+      <a href="#models" class="btn btn-light btn-lg">Explore Models</a>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-md-4">
         <div class="stat-card">
-          <i class="fas fa-chart-line fa-2x text-primary mb-2"></i>
-          <h3>95%+</h3>
-          <p>Prediction Accuracy</p>
+          <i class="fas fa-chart-line stat-icon"></i>
+          <h3 class="stat-value">95%</h3>
+          <p class="stat-label">Prediction Accuracy</p>
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <div class="stat-card">
-          <i class="fas fa-brain fa-2x text-success mb-2"></i>
-          <h3>5</h3>
-          <p>ML Models</p>
+          <i class="fas fa-brain stat-icon"></i>
+          <h3 class="stat-value">5</h3>
+          <p class="stat-label">ML Models</p>
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <div class="stat-card">
-          <i class="fas fa-clock fa-2x text-info mb-2"></i>
-          <h3>24/7</h3>
-          <p>Available</p>
+          <i class="fas fa-clock stat-icon"></i>
+          <h3 class="stat-value">24/7</h3>
+          <p class="stat-label">Availability</p>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- Models Section -->
-  <div class="row g-4">
-    <!-- Interest Rate Prediction Card -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card h-100 shadow-lg featured-card">
-        <div class="card-body">
-          <div class="featured-badge">Featured</div>
-          <h3 class="card-title">
-            <i class="fas fa-percentage text-primary me-2"></i>
-            Interest Rate Prediction
-          </h3>
-          <p class="card-text">
-            Get personalized interest rate predictions based on your CIBIL
-            score, annual income, and age using our advanced Multiple Linear
-            Regression model.
-          </p>
-          <ul class="feature-list">
-            <li>
-              <i class="fas fa-check-circle text-success"></i> 94% accuracy rate
-            </li>
-            <li>
-              <i class="fas fa-check-circle text-success"></i> Multiple factor
-              analysis
-            </li>
-            <li>
-              <i class="fas fa-check-circle text-success"></i> Instant results
-            </li>
-          </ul>
-          <a href="/predict_interest_rate" class="btn btn-primary mt-3">
-            <i class="fas fa-calculator me-2"></i>Calculate Interest Rate
-          </a>
+<!-- Models Section -->
+<section id="models" class="models-section">
+  <div class="container">
+    <h2 class="text-center mb-5">Our Prediction Models</h2>
+    <div class="row">
+      <!-- Interest Rate Prediction -->
+      <div class="col-md-4">
+        <div class="model-card">
+          <div class="model-card-header">
+            <h3 class="model-card-title">Interest Rate Prediction</h3>
+            <span class="model-accuracy">Accuracy: 92%</span>
+          </div>
+          <div class="model-card-body">
+            <p>
+              Predict interest rates based on multiple factors including credit
+              score, income, and age.
+            </p>
+            <ul class="model-features">
+              <li>Multiple Linear Regression</li>
+              <li>Real-time predictions</li>
+              <li>Detailed analysis</li>
+            </ul>
+            <a href="/predict_interest_rate" class="btn btn-primary w-100"
+              >Try Now</a
+            >
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Loan Amount Prediction Card -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card h-100 shadow">
-        <div class="card-body">
-          <h3 class="card-title">
-            <i class="fas fa-money-bill-wave text-success me-2"></i>
-            Loan Amount Prediction
-          </h3>
-          <p class="card-text">
-            Find out how much loan you can get based on your CIBIL score using
-            Simple Linear Regression.
-          </p>
-          <ul class="feature-list">
-            <li>
-              <i class="fas fa-check-circle text-success"></i> 92% accuracy rate
-            </li>
-            <li>
-              <i class="fas fa-check-circle text-success"></i> Quick estimation
-            </li>
-          </ul>
-          <a href="/predict_loan_amount" class="btn btn-outline-primary mt-3">
-            <i class="fas fa-calculator me-2"></i>Calculate Loan Amount
-          </a>
+      <!-- Loan Amount Prediction -->
+      <div class="col-md-4">
+        <div class="model-card">
+          <div class="model-card-header">
+            <h3 class="model-card-title">Loan Amount Prediction</h3>
+            <span class="model-accuracy">Accuracy: 94%</span>
+          </div>
+          <div class="model-card-body">
+            <p>
+              Determine the optimal loan amount based on your credit score and
+              financial profile.
+            </p>
+            <ul class="model-features">
+              <li>Simple Linear Regression</li>
+              <li>Quick results</li>
+              <li>Personalized recommendations</li>
+            </ul>
+            <a href="/predict_loan_amount" class="btn btn-primary w-100"
+              >Try Now</a
+            >
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Approval Status Card -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card h-100 shadow">
-        <div class="card-body">
-          <h3 class="card-title">
-            <i class="fas fa-check-circle text-info me-2"></i>
-            Approval Status
-          </h3>
-          <p class="card-text">
-            Check your loan approval probability using our Logistic Regression
-            model.
-          </p>
-          <ul class="feature-list">
-            <li>
-              <i class="fas fa-check-circle text-success"></i> 96% accuracy rate
-            </li>
-            <li>
-              <i class="fas fa-check-circle text-success"></i> Binary
-              classification
-            </li>
-          </ul>
-          <a
-            href="/predict_approval_status"
-            class="btn btn-outline-primary mt-3"
-          >
-            <i class="fas fa-check-double me-2"></i>Check Approval Status
-          </a>
+      <!-- Approval Status -->
+      <div class="col-md-4">
+        <div class="model-card">
+          <div class="model-card-header">
+            <h3 class="model-card-title">Approval Status</h3>
+            <span class="model-accuracy">Accuracy: 96%</span>
+          </div>
+          <div class="model-card-body">
+            <p>
+              Predict your loan approval chances based on your credit score and
+              financial history.
+            </p>
+            <ul class="model-features">
+              <li>Logistic Regression</li>
+              <li>Instant results</li>
+              <li>Clear recommendations</li>
+            </ul>
+            <a href="/predict_approval_status" class="btn btn-primary w-100"
+              >Try Now</a
+            >
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Advanced Interest Rate Card -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card h-100 shadow">
-        <div class="card-body">
-          <h3 class="card-title">
-            <i class="fas fa-chart-line text-warning me-2"></i>
-            Advanced Interest Rate
-          </h3>
-          <p class="card-text">
-            Get precise interest rate predictions using Polynomial Regression
-            for non-linear relationships.
-          </p>
-          <ul class="feature-list">
-            <li>
-              <i class="fas fa-check-circle text-success"></i> 95% accuracy rate
-            </li>
-            <li>
-              <i class="fas fa-check-circle text-success"></i> Non-linear
-              modeling
-            </li>
-          </ul>
-          <a
-            href="/predict_interest_rate_poly"
-            class="btn btn-outline-primary mt-3"
-          >
-            <i class="fas fa-chart-bar me-2"></i>Advanced Calculation
-          </a>
+      <!-- Advanced Interest Rate -->
+      <div class="col-md-4 mt-4">
+        <div class="model-card">
+          <div class="model-card-header">
+            <h3 class="model-card-title">Advanced Interest Rate</h3>
+            <span class="model-accuracy">Accuracy: 93%</span>
+          </div>
+          <div class="model-card-body">
+            <p>
+              Get more accurate interest rate predictions using polynomial
+              regression.
+            </p>
+            <ul class="model-features">
+              <li>Polynomial Regression</li>
+              <li>Non-linear analysis</li>
+              <li>Detailed breakdown</li>
+            </ul>
+            <a href="/predict_interest_rate_poly" class="btn btn-primary w-100"
+              >Try Now</a
+            >
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Default Risk Card -->
-    <div class="col-md-6 col-lg-4">
-      <div class="card h-100 shadow">
-        <div class="card-body">
-          <h3 class="card-title">
-            <i class="fas fa-shield-alt text-danger me-2"></i>
-            Default Risk Assessment
-          </h3>
-          <p class="card-text">
-            Assess loan default risk using our K-Nearest Neighbors classifier.
-          </p>
-          <ul class="feature-list">
-            <li>
-              <i class="fas fa-check-circle text-success"></i> 93% accuracy rate
-            </li>
-            <li>
-              <i class="fas fa-check-circle text-success"></i> Risk
-              classification
-            </li>
-          </ul>
-          <a href="/predict_default_risk" class="btn btn-outline-primary mt-3">
-            <i class="fas fa-exclamation-triangle me-2"></i>Check Risk Level
-          </a>
+      <!-- Default Risk Assessment -->
+      <div class="col-md-4 mt-4">
+        <div class="model-card">
+          <div class="model-card-header">
+            <h3 class="model-card-title">Default Risk Assessment</h3>
+            <span class="model-accuracy">Accuracy: 95%</span>
+          </div>
+          <div class="model-card-body">
+            <p>
+              Assess the risk of loan default using k-Nearest Neighbors
+              algorithm.
+            </p>
+            <ul class="model-features">
+              <li>k-Nearest Neighbors</li>
+              <li>Risk analysis</li>
+              <li>Preventive measures</li>
+            </ul>
+            <a href="/predict_default_risk" class="btn btn-primary w-100"
+              >Try Now</a
+            >
+          </div>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- How It Works Section -->
-  <div class="how-it-works mt-5">
-    <h2 class="text-center mb-4">How It Works</h2>
-    <div class="row g-4">
-      <div class="col-md-3">
-        <div class="step-card text-center">
-          <div class="step-number">1</div>
-          <i class="fas fa-user-edit fa-2x mb-3 text-primary"></i>
-          <h4>Enter Your Details</h4>
-          <p>Provide your financial information and personal details</p>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="step-card text-center">
-          <div class="step-number">2</div>
-          <i class="fas fa-cogs fa-2x mb-3 text-primary"></i>
-          <h4>ML Processing</h4>
-          <p>Our algorithms analyze your data using trained models</p>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="step-card text-center">
-          <div class="step-number">3</div>
-          <i class="fas fa-chart-pie fa-2x mb-3 text-primary"></i>
-          <h4>Get Results</h4>
-          <p>Receive accurate predictions and insights</p>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="step-card text-center">
-          <div class="step-number">4</div>
-          <i class="fas fa-handshake fa-2x mb-3 text-primary"></i>
-          <h4>Make Decisions</h4>
-          <p>Use the insights to make informed financial decisions</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<style>
-  .hero-section {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 4rem 2rem;
-    border-radius: 1rem;
-    margin-bottom: 3rem;
-  }
-
-  .stat-card {
-    padding: 1.5rem;
-    background: white;
-    border-radius: 1rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-  }
-
-  .featured-card {
-    border: 2px solid #007bff;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .featured-badge {
-    position: absolute;
-    top: 1rem;
-    right: -2rem;
-    background: #007bff;
-    color: white;
-    padding: 0.5rem 3rem;
-    transform: rotate(45deg);
-    font-size: 0.8rem;
-    font-weight: bold;
-  }
-
-  .feature-list {
-    list-style: none;
-    padding-left: 0;
-  }
-
-  .feature-list li {
-    margin-bottom: 0.5rem;
-  }
-
-  .step-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-    position: relative;
-  }
-
-  .step-number {
-    position: absolute;
-    top: -1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2rem;
-    height: 2rem;
-    background: #007bff;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-  }
-</style>
 {% endblock %}
